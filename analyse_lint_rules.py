@@ -48,14 +48,16 @@ def get_lint_rules(rules: dict[str, Any]) -> dict[str, Any]:
         return {}
 
 
-def analyze_lint_rules(directory: str, delete_duplicates: bool = False) -> tuple[int, int, int]:
+def analyze_lint_rules(
+    directory: str, delete_duplicates: bool = False
+) -> tuple[int, int, int]:
     """
     Analyze lint rules across the codebase.
-    
+
     Args:
         directory: Root directory to analyze
         delete_duplicates: Whether to delete files with duplicate rules
-        
+
     Returns:
         Tuple of (empty_files, no_lint_rules, no_unique_lint_rules)
     """
@@ -63,7 +65,7 @@ def analyze_lint_rules(directory: str, delete_duplicates: bool = False) -> tuple
     if not files:
         _LOGGER.error(f"No analysis_options.yaml files found in {directory}")
         return 0, 0, 0
-        
+
     print_tree(files)
     print(f"Gathered {len(files)} analysis_options.yaml")
 
@@ -132,40 +134,47 @@ def analyze_lint_rules(directory: str, delete_duplicates: bool = False) -> tuple
 def main() -> None:
     """Main entry point."""
     parser = setup_basic_parser("Analyze Dart lint rules across a codebase")
-    parser.add_argument("--delete-duplicates", action="store_true", 
-                       help="Delete files with no unique rules")
-    parser.add_argument("--verbose", "-v", action="store_true",
-                       help="Enable verbose logging")
-    
+    parser.add_argument(
+        "--delete-duplicates",
+        action="store_true",
+        help="Delete files with no unique rules",
+    )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+
     args = parser.parse_args()
-    
+
     if not validate_args(args):
         sys.exit(1)
-        
+
     # Setup logging
     log_level = logging.DEBUG if args.verbose else logging.INFO
-    logging.basicConfig(level=log_level, 
-                       format='%(levelname)s: %(message)s')
-    
+    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
     try:
         empty, no_lint_rules, no_unique_lint_rules = analyze_lint_rules(
             args.directory, args.delete_duplicates
         )
-        
+
         total_files = empty + no_lint_rules + no_unique_lint_rules
-        
+
         print(f"Found {empty} empty analysis files")
         if total_files > 0:
             print(f"{(empty / total_files) * 100:.1f}% of all analysis files")
-        
+
         print(f"Found {no_lint_rules} analysis files with no lint rules")
         if total_files > 0:
-            print(f"{(no_lint_rules / total_files) * 100:.1f}% of all collected analysis files")
-        
+            print(
+                f"{(no_lint_rules / total_files) * 100:.1f}% of all collected analysis files"
+            )
+
         print(f"{no_unique_lint_rules} files contained no unique lint rules")
         if total_files > 0:
-            print(f"{(no_unique_lint_rules / total_files) * 100:.1f}% of all collected analysis files")
-            
+            print(
+                f"{(no_unique_lint_rules / total_files) * 100:.1f}% of all collected analysis files"
+            )
+
     except Exception as e:
         _LOGGER.error(f"Error: {e}")
         sys.exit(1)
