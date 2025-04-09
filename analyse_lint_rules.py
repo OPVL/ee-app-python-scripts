@@ -2,21 +2,23 @@ import json
 import logging
 import os
 import sys
+
 import yaml
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def find_analysis_options_files(directory):
-    analysis_options_files = []
-    for root, dirs, files in os.walk(directory):
+def find_analysis_options_files(directory: str) -> list[str]:
+    analysis_options_files: list[str] = []
+    for root, _, files in os.walk(directory):
         for file in files:
             if file == "analysis_options.yaml":
                 analysis_options_files.append(os.path.join(root, file))
     return analysis_options_files
 
 
-def print_tree(files):
+def print_tree(files: list[str]) -> None:
+    """Prints the directory tree of the given files."""
     tree = {}
     for file in files:
         parts = file.split(os.sep)
@@ -26,7 +28,7 @@ def print_tree(files):
                 current_level[part] = {}
             current_level = current_level[part]
 
-    def print_dict(d, indent=0):
+    def print_dict(d, indent: int = 0):
         for key, value in d.items():
             print(" " * indent + key)
             print_dict(value, indent + 2)
@@ -34,11 +36,12 @@ def print_tree(files):
     print_dict(tree)
 
 
-def load_yaml_rules(file_path):
+def load_yaml_rules(file_path: str) -> dict[str, dict]:
+    """Load YAML file and convert it to a dictionary."""
     with open(file_path, "r") as file:
         yaml_content = yaml.safe_load(file)
 
-    rules_dict = {}
+    rules_dict: dict[str, dict[str, str]] = {}
     for key, value in yaml_content.items():
         if isinstance(value, dict):
             rules_dict[key] = value

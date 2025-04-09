@@ -1,5 +1,5 @@
-import os
 import argparse
+import os
 
 
 def get_files(
@@ -20,7 +20,7 @@ def get_files(
     return file_list
 
 
-def human_readable_size(size: int) -> str:
+def human_readable_size(size: int | float) -> str | None:
     for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size < 1024:
             return f"{size:.2f} {unit}"
@@ -46,7 +46,7 @@ def main() -> None:
     print(f"{'File Path':<100} {'Size':>10}")
     print("=" * 110)
     for file, size in sorted_files:
-        print(f"{file:<100} {human_readable_size(size):>10}")
+        print(f"{file:<100} {human_readable_size(int(size)):>10}")
 
 
 if __name__ == "__main__":
