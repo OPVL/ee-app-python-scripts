@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 
-def gather_freezed_files_info(directory: str) -> tuple[int, int, int, int, int, int]:
+def gather_freezed_files_info(directory: str) -> tuple[list[str], int, list[str], int, list[str], int]:
     """
     Gather information about freezed files in the given directory.
 
@@ -24,26 +24,26 @@ def gather_freezed_files_info(directory: str) -> tuple[int, int, int, int, int, 
         Tuple of (freezed_files, freezed_lines, cubit_files, cubit_lines, aem_files, aem_lines)
     """
     # Stats counters
-    total_files_freezed = 0
+    total_files_freezed = []
     total_lines_freezed = 0
-    total_files_cubit = 0
+    total_files_cubit = []
     total_lines_cubit = 0
-    total_files_aem = 0
+    total_files_aem = []
     total_lines_aem = 0
 
     # Find and count freezed.dart files
     for file_path in find_files(directory, file_extension=".freezed.dart"):
-        total_files_freezed += 1
+        total_files_freezed.append(file_path)
         total_lines_freezed += count_lines(file_path)
 
     # Find and count cubit files
     for file_path in find_files(directory, file_pattern="cubit", file_extension=".freezed.dart"):
-        total_files_cubit += 1
+        total_files_cubit.append(file_path)
         total_lines_cubit += count_lines(file_path)
 
     # Find and count aem files
     for file_path in find_files(directory, file_pattern="aem", file_extension=".freezed.dart"):
-        total_files_aem += 1
+        total_files_aem.append(file_path)
         total_lines_aem += count_lines(file_path)
 
     return (
@@ -78,13 +78,13 @@ def main() -> None:
         ) = stats
 
         # Display results
-        print(f"Total number of .freezed.dart files: {total_files_freezed}")
+        print(f"Total number of .freezed.dart files: {len(total_files_freezed)}")
         print(
             f"Total number of lines of code in .freezed.dart files: {total_lines_freezed}"
         )
-        print(f"Total number of cubit files: {total_files_cubit}")
+        print(f"Total number of cubit files: {len(total_files_cubit)}")
         print(f"Total number of lines of code in cubit files: {total_lines_cubit}")
-        print(f"Total number of aem files: {total_files_aem}")
+        print(f"Total number of aem files: {len(total_files_aem)}")
         print(f"Total number of lines of code in aem files: {total_lines_aem}")    
 
     except Exception as e:
