@@ -4,15 +4,13 @@ Tool to analyze Dart freezed files in a codebase.
 
 This script counts files and lines of code for freezed.dart, cubit, and aem files.
 """
-import os
 import sys
-from typing import Tuple
 
 from utils.cli import setup_basic_parser, validate_args
 from utils.file import count_lines, find_files
 
 
-def gather_freezed_files_info(directory: str) -> Tuple[int, int, int, int, int, int]:
+def gather_freezed_files_info(directory: str) -> tuple[int, int, int, int, int, int]:
     """
     Gather information about freezed files in the given directory.
 
@@ -36,12 +34,12 @@ def gather_freezed_files_info(directory: str) -> Tuple[int, int, int, int, int, 
         total_lines_freezed += count_lines(file_path)
 
     # Find and count cubit files
-    for file_path in find_files(directory, file_extension="_cubit.dart"):
+    for file_path in find_files(directory, file_pattern="cubit", file_extension=".freezed.dart"):
         total_files_cubit += 1
         total_lines_cubit += count_lines(file_path)
 
     # Find and count aem files
-    for file_path in find_files(directory, file_extension="_aem.dart"):
+    for file_path in find_files(directory, file_pattern="aem", file_extension=".freezed.dart"):
         total_files_aem += 1
         total_lines_aem += count_lines(file_path)
 

@@ -41,7 +41,7 @@ def find_files(
                 continue
 
         for file in files:
-            if file_pattern and file != file_pattern:
+            if file_pattern and file_pattern not in file:
                 continue
             if file_extension and not file.endswith(file_extension):
                 continue
